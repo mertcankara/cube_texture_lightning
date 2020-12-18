@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html><head>
-<meta http-equiv="content-type" content="text/html; charset=windows-1252"></head><img><button id="ButtonX">Rotate X</button>
-<button id="ButtonY">Rotate Y</button>
-<button id="ButtonZ">Rotate Z</button>
-<button id="ButtonT">Toggle Rotation</button>
-
+<meta http-equiv="content-type" content="text/html; charset=windows-1252"></head><img>
 
 <script id="vertex-shader" type="x-shader/x-vertex">#version 300 es
 in  vec4 vPosition;
@@ -86,9 +82,19 @@ main()
 <script type="text/javascript" src="shadedCube_js/shadedCube.js"></script>
 <img id="cubeTexture" src="texture_cube.png" width="0" height="0">
 
-<canvas id="gl-canvas" width="512" height="512">
-Oops ... your browser doesn't support the HTML5 canvas element
-</canvas>
+<body>
+    <canvas id="gl-canvas" width="512" height="512"></canvas>
 
-
+    <div>
+        <button id="ButtonX">Rotate X</button>
+        <button id="ButtonY">Rotate Y</button>
+        <button id="ButtonZ">Rotate Z</button>
+        <button id="ButtonT">Toggle Rotation</button>
+        <button id="ButtonX+">Light X+</button>
+        <button id="ButtonX-">Light X-</button>
+        <button id="ButtonY+">Light Y+</button>
+        <button id="ButtonY-">Light Y-</button>
+        <button id="ButtonZ+">Light Z+</button>
+        <button id="ButtonZ-">Light Z-</button>
+    </div>
 </body></html>

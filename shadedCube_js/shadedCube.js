@@ -19,7 +19,9 @@ var vertices = [
         vec4( 0.5, -0.5, -0.5, 1.0 )
     ];
 
-var lightPosition = vec4(0.0, 10.0, 0.0, 0.0 );
+var lightPos = {'x': 0.0, 'y': 0.0, 'z': 1.0}
+
+var lightPosition = vec4(lightPos.x, lightPos.y, lightPos.z, 0.0 );
 var lightAmbient = vec4(0.2, 0.2, 0.2, 1.0 );
 var lightDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
 var lightSpecular = vec4( 1.0, 1.0, 1.0, 1.0 );
@@ -89,7 +91,7 @@ window.onload = function init() {
     if ( !gl ) { alert( "WebGL isn't available" ); }
 
     gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
+    gl.clearColor( 1.0, 0.0, 1.0, 1.0 );
     
     gl.enable(gl.DEPTH_TEST);
 
@@ -160,6 +162,12 @@ window.onload = function init() {
     document.getElementById("ButtonY").onclick = function(){axis = yAxis;};
     document.getElementById("ButtonZ").onclick = function(){axis = zAxis;};
     document.getElementById("ButtonT").onclick = function(){flag = !flag;};
+    document.getElementById("ButtonX+").onclick = function(){lightPos.x += 0.1}
+    document.getElementById("ButtonX-").onclick = function(){lightPos.x -= 0.1}
+    document.getElementById("ButtonY+").onclick = function(){lightPos.y += 0.1}
+    document.getElementById("ButtonY-").onclick = function(){lightPos.y -= 0.1}
+    document.getElementById("ButtonZ+").onclick = function(){lightPos.z += 0.1}
+    document.getElementById("ButtonZ-").onclick = function(){lightPos.z -= 0.1}
 
     gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
        flatten(ambientProduct));
@@ -180,22 +188,24 @@ window.onload = function init() {
 }
 
 var render = function(){
+    gl.enable(gl.DEPTH_TEST)
+    gl.enable(gl.CULL_FACE)
+    gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-    gl.enable(gl.DEPTH_TEST);
-    gl.enable(gl.CULL_FACE);
-    gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    if(flag) theta[axis] += 2.0
 
-    if(flag) theta[axis] += 2.0;
+    modelView = mat4()
+    modelView = mult(modelView, rotate(theta[xAxis], [1, 0, 0] ))
+    modelView = mult(modelView, rotate(theta[yAxis], [0, 1, 0] ))
+    modelView = mult(modelView, rotate(theta[zAxis], [0, 0, 1] ))
 
-    modelView = mat4();
-    modelView = mult(modelView, rotate(theta[xAxis], [1, 0, 0] ));
-    modelView = mult(modelView, rotate(theta[yAxis], [0, 1, 0] ));
-    modelView = mult(modelView, rotate(theta[zAxis], [0, 0, 1] ));
+    gl.uniformMatrix4fv( gl.getUniformLocation(program,"modelViewMatrix"), false, flatten(modelView));
 
-    gl.uniformMatrix4fv( gl.getUniformLocation(program,
-            "modelViewMatrix"), false, flatten(modelView) );
+    lightPosition = vec4(lightPos.x, lightPos.y, lightPos.z, 0.0)
 
-    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+    gl.uniform4fv(gl.getUniformLocation(program, "lightPosition"), flatten(lightPosition))
+
+    gl.drawArrays( gl.TRIANGLES, 0, numVertices )
 
 
     requestAnimFrame(render);
